@@ -1,0 +1,12 @@
+- name: Installed NFS Server
+  yum: name=nfs-utils state=present
+
+- name: Configure NFS Server
+  template: src=exports.j2 dest=/etc/exports
+  notify: Restart NFS Server
+
+- name: Create NFS Server Share Directory
+  file: path={{ nfs_dir }} state=directory owner=root group=root
+
+- name: Started NFS Server
+  service: name=nfs state=started enabled=yes

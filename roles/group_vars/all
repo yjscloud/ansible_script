@@ -1,0 +1,13 @@
+nfs_user: nfs
+nfs_user_id: 777
+
+web_user: www
+web_user_id: 666
+
+nfs_dir: /data
+nfs_share_ip: 172.16.149.0/24
+
+db_user: yjscloud
+db_password: 123456
+db_dir: /data
+db_dir_data: /data/mysql/data/

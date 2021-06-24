@@ -1,0 +1,7 @@
+# - name: DB Directory
+#   file:
+#     path: "{{ db_dir }}"
+#     state: directory
+
+- name: copy and unzip
+  unarchive: src=mysql-5.7.32-linux-glibc2.12-x86_64.tar.gz dest={{ db_dir }} owner=root group=root

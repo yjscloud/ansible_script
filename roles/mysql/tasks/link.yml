@@ -1,0 +1,16 @@
+# - name: mkdir link
+#   shell: ln -s  {{ db_dir }}/mysql-5.7.32-linux-glibc2.12-x86_64 {{ db_dir }}/mysql
+
+- name: mkdir link
+  file:
+    src: "{{ db_dir }}/mysql-5.7.32-linux-glibc2.12-x86_64"
+    dest: "{{ db_dir }}/mysql"
+    state: link
+
+- name: mkdir {{ db_dir_data }}
+  file:
+    path: "{{ db_dir_data }}"
+    state: directory
+    mode: "0755"
+- name: mysql start
+  shell: /data/mysql/bin/mysqld --initialize-insecure --user=mysql --basedir=/data/mysql --datadir={{ db_dir_data }}

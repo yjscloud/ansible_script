@@ -1,0 +1,9 @@
+---
+- include: install.yml
+- include: group.yml
+- include: user.yml
+- include: unarchive.yml
+- include: link.yml
+- include: config.yml
+- include: service.yml
+- include: start_mysql.yml

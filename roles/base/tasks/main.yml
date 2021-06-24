@@ -1,0 +1,86 @@
+- name: Disabled Frirewalld Server
+  service: name=firewalld state=stopped enabled=no
+
+- name: Disabled Selinux Server
+  selinux: state=disabled
+
+- name: Create Web  {{ web_user }}  {{ web_user_id }} Group
+  group: name={{ web_user }} gid={{ web_user_id|int }}
+
+- name: Create Web {{ web_user }}  {{ web_user_id }} User
+  user: name={{ web_user }} uid={{ web_user_id|int }} group={{ web_user }}
+
+- name: Create Base Yum Repos
+  yum_repository:
+    name: Base
+    description: Base Aliyun repo
+    baseurl: http://mirrors.aliyun.com/centos/$releasever/os/$basearch/
+    gpgcheck: no
+
+- name: Create  Epel Yum Repos
+  yum_repository:
+    name: epel
+    description: epel Aliyun repo
+    baseurl: http://mirrors.aliyun.com/epel/7/$basearch
+    gpgcheck: no
+
+- name: Create  Nginx Yum Repos
+  yum_repository:
+    name: nginx
+    description: Nginx Repository
+    baseurl: http://nginx.org/packages/centos/7/$basearch
+    gpgcheck: no
+  when: ( ansible_hostname is match('web*') ) or
+    ( ansible_hostname is match('lb*') )
+
+- name: Create  PHP Yum Repos
+  yum_repository:
+    name: PHP
+    description: PHP Repository
+    baseurl: http://us-east.repo.webtatic.com/yum/el7/x86_64/
+    gpgcheck: no
+  when: ( ansible_hostname is match('web*') )
+
+- name: Installed Packages All
+  yum: name{{ packages }} state=present
+  vars:
+    packages:
+      - rsync
+      - nfs-utils
+      - net-tools
+      - wget
+      - tree
+      - lrzsz
+      - vim
+      - unzip
+      - httpd-tools
+      - bash-completion
+      - iftop
+      - glances
+      - iotop
+
+- name: Change Limit  /etc/security/limits.conf
+  pam_limits:
+    domain: "*"
+    limit_type: "{{ item.limit_type }}"
+    limit_item: "{{ item.limit_item }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { limit_type: "soft", limit_item: "nofile", value: "100000" }
+    - { limit_type: "hard", limit_item: "nofile", value: "100000" }
+
+- name: change sysctl options
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+  with_items:
+    - { "name": "fs.file-max", "value": 6815744 }
+    - { "name": "net.ipv4.tcp_tw_reuse", "value": 1 }
+    - { "name": "net.ipv4.tcp_tw_recycle", "value": 1 }
+  ignore_errors: true
+
+- name: make sysctl.conf effect
+  shell: "sysctl -p"
+  ignore_errors: true
+  changed_when: false

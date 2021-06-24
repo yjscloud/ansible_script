@@ -1,0 +1,65 @@
+- hosts: dbserver
+  remote_user: root
+  tasks:
+    - name: Installed Packages All
+      yum: name{{ packages }} state=present
+      vars:
+        packages:
+          - rsync
+          - nfs-utils
+          - net-tools
+          - wget
+          - tree
+          - lrzsz
+          - vim
+          - unzip
+          - httpd-tools
+          - bash-completion
+          - iftop
+          - glances
+          - iotop
+
+    - name: Create Base Yum Repos
+      yum_repository:
+        name: Base
+        description: Base Aliyun repo
+        baseurl: http://mirrors.aliyun.com/centos/$releasever/os/$basearch/
+        gpgcheck: no
+
+    - name: Create  Epel Yum Repos
+      yum_repository:
+        name: epel
+        description: epel Aliyun repo
+        baseurl: http://mirrors.aliyun.com/epel/7/$basearch
+        gpgcheck: no
+
+    - name: Config Repo
+      shell: yum-config-manager --add-repo https://mirrors.ustc.edu.cn/docker-ce/linux/centos/docker-ce.repo
+      notify: yum-makecache
+
+    - name: Install Docker-ce
+      yum:
+        name: docker-ce
+        state: present
+
+    - name: Enable & Start docker
+      service:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Docker Mirror to Accelerate
+      shell:
+        cmd: |
+          cat > /etc/docker/daemon.json << EOF
+          {
+          "registry-mirrors": ["https://lojf3k05.mirror.aliyuncs.com"]
+          }
+          EOF
+      notify: Docker Accelerate
+
+  handlers:
+    - name: yum-makecache
+      shell: yum makecache fast
+    - name: Docker Accelerate
+      shell: systemctl restart docker

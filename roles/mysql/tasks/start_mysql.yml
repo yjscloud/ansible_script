@@ -1,0 +1,31 @@
+- name: copy mysql.sh
+  copy:
+    src: mysql.sh
+    dest: /tmp
+    mode: 755
+- name: mysql.sh start
+  shell: bash /tmp/mysql.sh
+
+- name: Create  Database
+  mysql_db:
+    login_host: "127.0.0.1"
+    login_user: "root"
+    login_password: "123456"
+    login_port: "3306"
+    name:
+      - yjscloud
+      - wordpress
+      - zabbix
+      - phpmyadmin
+
+- name: create a user
+  mysql_user:
+    login_host: "127.0.0.1"
+    login_user: "root"
+    login_password: "123456"
+    login_port: "3306"
+    host: "%"
+    priv: "*.*:ALL"
+    state: present
+    name: yjscloud
+    password: 123456

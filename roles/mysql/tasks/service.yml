@@ -1,0 +1,8 @@
+- name: service script
+  shell: /bin/cp /data/mysql/bin/mysqld /usr/bin/
+- name: service mysql
+  shell: /bin/cp /data/mysql/bin/mysql /usr/bin/
+- name: service script
+  copy: src=mysql.service dest=/usr/lib/systemd/system/mysql.service
+- name: service restart
+  shell: systemctl restart mysql.service;systemctl enable mysql.service

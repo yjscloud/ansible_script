@@ -1,0 +1,3 @@
+---
+- name: install package
+  yum: name=libaio,perl-Data-Dumper,perl-Getopt-Long,MySQL-python,numactl,libaio

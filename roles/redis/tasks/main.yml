@@ -1,0 +1,9 @@
+- name: Installed Redis Server
+  yum: name=redis state=present
+
+- name: Configure Redis Server
+  template: src=redis.conf.j2 dest=/etc/redis.conf
+  notify: Restart Redis Server
+
+- name: Started Redis Server
+  service: name=redis state=started enabled=yes
