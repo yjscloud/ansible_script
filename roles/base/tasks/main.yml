@@ -30,17 +30,17 @@
     description: Nginx Repository
     baseurl: http://nginx.org/packages/centos/7/$basearch
     gpgcheck: no
-  when: ( ansible_hostname is match('web*') ) or
-    ( ansible_hostname is match('lb*') )
 
+  # when: ( ansible_hostname is match('web*') ) or
+  #   ( ansible_hostname is match('lb*') )
 - name: Create  PHP Yum Repos
   yum_repository:
     name: PHP
     description: PHP Repository
     baseurl: http://us-east.repo.webtatic.com/yum/el7/x86_64/
     gpgcheck: no
-  when: ( ansible_hostname is match('web*') )
 
+  # when: ( ansible_hostname is match('web*') )
 - name: Installed Packages All
   yum: name{{ packages }} state=present
   vars:

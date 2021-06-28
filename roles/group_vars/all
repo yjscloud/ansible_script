@@ -7,6 +7,7 @@ web_user_id: 666
 nfs_dir: /data
 nfs_share_ip: 172.16.149.0/24
 
+db_file: http://172.16.149.22/mysql.tar.gz
 db_user: yjscloud
 db_password: 123456
 db_dir: /data

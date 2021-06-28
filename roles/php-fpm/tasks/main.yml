@@ -1,0 +1,31 @@
+- name: Install php-fpm server
+  yum: name={{ packages }} state=present
+  vars:
+    packages:
+      - php71w
+      - php71w-cli
+      - php71w-common
+      - php71w-devel
+      - php71w-embedded
+      - php71w-gd
+      - php71w-mcrypt
+      - php71w-mbstring
+      - php71w-pdo
+      - php71w-xml
+      - php71w-fpm
+      - php71w-mysqlnd
+      - php71w-opcache
+      - php71w-pecl-memcached
+      - php71w-pecl-redis
+      - php71w-pecl-mongodb
+
+- name: Configure PHP-FPM Server
+  template: src=www.conf.j2   dest=/etc/php-fpm.d/www.conf
+  notify: Restart PHP-FPM Server
+
+- name: Configure PHP.INI Server
+  template: src=php.ini.j2   dest=/etc/php.ini
+  notify: Restart PHP-FPM Server
+
+- name: Server PHP-FPM Server
+  service: name=php-fpm  state=started enabled=yes

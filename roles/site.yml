@@ -1,17 +1,6 @@
-- hosts: all
+- hosts: typecho
   roles:
     - role: base
-
-- hosts: webserver
-  roles:
-    - role: nginx
-
-- hosts: nfsserver
-  roles:
-    - role: nfs
-
-- hosts: dbserver
-  roles:
-    - role: redis
     - role: mysql
-      tags: mysql
+    - role: nginx
+    - role: php-fpm
